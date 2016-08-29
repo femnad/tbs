@@ -6,7 +6,6 @@
 
 #define BUFFER_SIZE 256
 #define CONNECT_PROTOCOL "tcp"
-#define SLEEP_PERIOD 5
 
 int main(int argc, char *argv []) {
     if (argc != 3) {
@@ -37,7 +36,6 @@ int main(int argc, char *argv []) {
         int command_length = sprintf(command, "tmux set-buffer '%s'", buffer);
         command[command_length] = '\0';
         system(command);
-        sleep(SLEEP_PERIOD);
     }
     zmq_close(subscriber);
     zmq_ctx_destroy(context);

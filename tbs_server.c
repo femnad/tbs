@@ -12,7 +12,7 @@
 #define BIND_PORT 9753
 #define BIND_PROTOCOL "tcp"
 #define FIFO_NAME "/tmp/tbs"
-#define SLEEP_PERIOD 5
+#define SLEEP_PERIOD 1
 
 int main(int argc, char *argv []) {
     mkfifo(FIFO_NAME, S_IRUSR | S_IWUSR);
@@ -37,6 +37,7 @@ int main(int argc, char *argv []) {
         read(fifo_fd, buffer, BUFFER_LENGTH);
         zmq_send(publisher, buffer, strlen(buffer), 0);
         close(fifo_fd);
+        sleep(SLEEP_PERIOD);
     }
     zmq_close(publisher);
     zmq_ctx_destroy(context);
