@@ -32,7 +32,7 @@ int main(int argc, char *argv []) {
     char buffer[BUFFER_SIZE];
     while (1) {
         int recv_length = zmq_recv(subscriber, buffer, BUFFER_SIZE, 0);
-        char *received_buffer = truncate_string(buffer, recv_length);
+        char *received_buffer = cave_truncate_string(buffer, recv_length);
         char *command = cave_get_string(TMUX_SET_BUFFER_COMMAND,
                                         received_buffer);
         system(command);

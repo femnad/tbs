@@ -5,7 +5,7 @@
 #define OUGHT_TO_BE_ENOUGH 256
 
 char*
-truncate_string(char *wasteful_string, int string_length) {
+cave_truncate_string(char *wasteful_string, int string_length) {
     char *new_string = malloc(sizeof(char) * string_length);
     char *string_start = new_string;
     for (int i = 0; i < string_length; i++) {
@@ -23,5 +23,5 @@ cave_get_string(char *format_string, ...) {
     va_start(argp, format_string);
     int string_length = vsprintf(buffer, format_string, argp);
     va_end(argp);
-    return truncate_string(buffer, string_length);
+    return cave_truncate_string(buffer, string_length);
 }
