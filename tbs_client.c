@@ -4,8 +4,11 @@
 #include <unistd.h>
 #include <zmq.h>
 
+#include "cave_string.h"
+
 #define BUFFER_SIZE 256
 #define CONNECT_PROTOCOL "tcp"
+#define TMUX_SET_BUFFER_COMMAND "tmux set-buffer \"%s\""
 
 int main(int argc, char *argv []) {
     if (argc != 3) {
@@ -16,10 +19,8 @@ int main(int argc, char *argv []) {
     char *port = argv[2];
     void *context = zmq_ctx_new();
     void *subscriber = zmq_socket(context, ZMQ_SUB);
-    char connect_address[BUFFER_SIZE];
-    int address_length = sprintf(connect_address, "%s://%s:%s",
-                                 CONNECT_PROTOCOL, host, port);
-    connect_address[address_length] = '\0';
+    char *connect_address = cave_get_string("%s://%s:%s", CONNECT_PROTOCOL,
+                                            host, port);
     int rc = zmq_connect(subscriber, connect_address);
     if (rc != 0) {
         perror("Connect error");
@@ -31,10 +32,9 @@ int main(int argc, char *argv []) {
     char buffer[BUFFER_SIZE];
     while (1) {
         int recv_length = zmq_recv(subscriber, buffer, BUFFER_SIZE, 0);
-        buffer[recv_length] = '\0';
-        char command[BUFFER_SIZE];
-        int command_length = sprintf(command, "tmux set-buffer '%s'", buffer);
-        command[command_length] = '\0';
+        char *received_buffer = truncate_string(buffer, recv_length);
+        char *command = cave_get_string(TMUX_SET_BUFFER_COMMAND,
+                                        received_buffer);
         system(command);
     }
     zmq_close(subscriber);
