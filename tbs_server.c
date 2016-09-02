@@ -24,7 +24,8 @@ int main(int argc, char *argv []) {
     void *publisher = zmq_socket(context, ZMQ_PUB);
     int rc = zmq_bind(publisher, bind_address);
     if (rc != 0) {
-        printf("Bind error\n");
+        perror("Bind error");
+        exit(1);
     }
     int fifo_fd;
     char buffer[BUFFER_LENGTH];
@@ -32,7 +33,7 @@ int main(int argc, char *argv []) {
         fifo_fd = open(FIFO_NAME, O_RDONLY);
         if (fifo_fd == -1) {
             perror("Error opening fifo");
-            exit(1);
+            exit(2);
         }
         read(fifo_fd, buffer, BUFFER_LENGTH);
         zmq_send(publisher, buffer, strlen(buffer), 0);
